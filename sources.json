@@ -5,10 +5,9 @@
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/google.json",
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/google.json",
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/youtube.json",
-    "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/youtube.json",
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/netflix.json",
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/netflix.json",
-    "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/gfw.srs",
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/gfw.json",
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/github.json",
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/openai.json",
     "https://github.com/Accademia/Additional_Rule_For_Clash/raw/refs/heads/main/AppleAI/AppleAI.yaml"
