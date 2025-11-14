@@ -13,37 +13,52 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      # 2️⃣ Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
 
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: pip install requests pyyaml
 
+      # 4️⃣ Generate rules
       - name: Generate rules
         run: python generate_rules.py
 
+      # 5️⃣ Configure Git
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+      # 6️⃣ Commit changes
       - name: Commit changes
         run: |
           git add output/rules.conf output/snapshot.json || true
           git commit -m "Auto update rules $(date -u '+%Y-%m-%d %H:%M:%S')" || echo "No changes"
 
+      # 7️⃣ Pull remote changes (rebase)
       - name: Pull remote changes
         run: git pull --rebase origin main || true
 
+      # 8️⃣ Push changes to main
       - name: Push changes
         run: git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Spaiol/ShadowSocket_iOS_rules.git main
 
+      # 9️⃣ Create or update 'latest' tag
+      - name: Create or update tag
+        run: |
+          git tag -fa latest -m "Daily updated rules"
+          git push origin latest --force
+
+      # 🔟 Upload rules.conf to Release
       - name: Upload rules.conf to Release
         uses: softprops/action-gh-release@v1
         with:
