@@ -1,0 +1,53 @@
+{
+  "fetched": {
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/apple.json": {
+      "domains_count": 1566,
+      "ips_count": 0
+    },
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/apple.json": {
+      "domains_count": 0,
+      "ips_count": 10
+    },
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/google.json": {
+      "domains_count": 696,
+      "ips_count": 0
+    },
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/google.json": {
+      "domains_count": 0,
+      "ips_count": 731
+    },
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/youtube.json": {
+      "domains_count": 180,
+      "ips_count": 0
+    },
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/netflix.json": {
+      "domains_count": 37,
+      "ips_count": 0
+    },
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/netflix.json": {
+      "domains_count": 0,
+      "ips_count": 19
+    },
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/gfw.json": {
+      "domains_count": 5856,
+      "ips_count": 0
+    },
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/github.json": {
+      "domains_count": 31,
+      "ips_count": 0
+    },
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/openai.json": {
+      "domains_count": 33,
+      "ips_count": 0
+    },
+    "https://github.com/Accademia/Additional_Rule_For_Clash/raw/refs/heads/main/AppleAI/AppleAI.yaml": {
+      "domains_count": 13,
+      "ips_count": 0
+    },
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/synology.json": {
+      "domains_count": 20,
+      "ips_count": 0
+    }
+  },
+  "errors": []
+}
