@@ -3,9 +3,10 @@
 generate_rules.py
 
 合并多个 JSON / YAML 源（MetaCubeX geosite/geoip + Clash YAML）
-输出单一文件 output/rules.conf，格式带注释分区（Proxy / Direct）。
+输出单一文件 output/rules.conf，格式带注释分区：
+- Proxy / Direct
+- Netflix 单独分组
 默认策略：direct；黑名单来源规则设为 proxy，白名单来源设为 direct。
-支持 Netflix 分组，将 geoip + geosite 合并为单独分区。
 """
 
 import requests
@@ -23,10 +24,7 @@ SOURCES_FILE = ROOT / "sources.json"
 SNAPSHOT_FILE = OUT_DIR / "snapshot.json"
 OUT_FILE = OUT_DIR / "rules.conf"
 
-# timeout for requests
 REQ_TIMEOUT = 30
-
-# simple domain validation
 DOMAIN_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9\-.]{0,254}$")
 
 def fetch_text(url):
@@ -45,9 +43,7 @@ def normalize_domain(token):
     d = token.strip().lower()
     if d.startswith('.'):
         d = d[1:]
-    # strip protocol / path
     d = re.sub(r"^https?://", "", d).split('/')[0]
-    # remove trailing colon/port
     d = d.split(':')[0]
     if DOMAIN_RE.match(d):
         return d
@@ -108,8 +104,7 @@ def parse_clash_yaml_text(text):
         parts = [p.strip() for p in item.split(",", 1)]
         if len(parts) < 2:
             continue
-        typ = parts[0].upper()
-        val = parts[1]
+        typ, val = parts[0].upper(), parts[1]
         if typ == "DOMAIN-SUFFIX":
             nd = normalize_domain(val)
             if nd:
@@ -118,7 +113,7 @@ def parse_clash_yaml_text(text):
             nd = normalize_domain(val)
             if nd:
                 domains.add(("DOMAIN", nd))
-        elif typ in ("DOMAIN-KEYWORD",):
+        elif typ == "DOMAIN-KEYWORD":
             kw = val.strip().lower()
             if kw:
                 domains.add(("KEYWORD", kw))
@@ -135,9 +130,9 @@ def parse_source(url):
         try:
             obj = json.loads(text)
             return parse_geosite_json_obj(obj)
-        except Exception as e:
-            print(f"[warn] json parse failed for {url}: {e} -- fallback")
-    if url_lower.endswith((".yaml", ".yml")):
+        except:
+            pass
+    if url_lower.endswith(".yaml") or url_lower.endswith(".yml"):
         return parse_clash_yaml_text(text)
     try:
         obj = json.loads(text)
@@ -148,8 +143,7 @@ def parse_source(url):
         return parse_clash_yaml_text(text)
     except:
         pass
-    domains = set()
-    ips = set()
+    domains, ips = set(), set()
     for line in text.splitlines():
         line = line.strip()
         if not line or line.startswith("#"):
@@ -161,31 +155,22 @@ def parse_source(url):
     return domains, ips
 
 def flatten_domain_entries(domain_entries):
-    suffixes = set()
-    exact = set()
-    keywords = set()
+    suffixes, exact, keywords = set(), set(), set()
     for e in domain_entries:
         if not isinstance(e, tuple):
             continue
         t, val = e
-        if t == "SUFFIX":
-            suffixes.add(val)
-        elif t == "DOMAIN":
-            exact.add(val)
-        elif t == "KEYWORD":
-            keywords.add(val)
+        if t == "SUFFIX": suffixes.add(val)
+        elif t == "DOMAIN": exact.add(val)
+        elif t == "KEYWORD": keywords.add(val)
     return suffixes, exact, keywords
 
 def compose_lines(suffixes, exacts, keywords, ips, policy):
     lines = []
-    for d in sorted(suffixes):
-        lines.append(f"DOMAIN-SUFFIX,{d},{policy}")
-    for d in sorted(exacts):
-        lines.append(f"DOMAIN,{d},{policy}")
-    for k in sorted(keywords):
-        lines.append(f"DOMAIN-KEYWORD,{k},{policy}")
-    for ip in sorted(ips):
-        lines.append(f"IP-CIDR,{ip},{policy},no-resolve")
+    for d in sorted(suffixes): lines.append(f"DOMAIN-SUFFIX,{d},{policy}")
+    for d in sorted(exacts): lines.append(f"DOMAIN,{d},{policy}")
+    for k in sorted(keywords): lines.append(f"DOMAIN-KEYWORD,{k},{policy}")
+    for ip in sorted(ips): lines.append(f"IP-CIDR,{ip},{policy},no-resolve")
     return lines
 
 def main():
@@ -197,27 +182,17 @@ def main():
     blacklist = sources.get("blacklist", [])
     whitelist = sources.get("whitelist", [])
 
-    proxy_entries = set()
-    proxy_ips = set()
-    direct_entries = set()
-    direct_ips = set()
-
-    # Netflix 分组
-    NETFLIX_GROUP = {
-        "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/netflix.json",
-        "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/netflix.json"
-    }
-    netflix_entries = set()
-    netflix_ips = set()
-
+    proxy_entries, proxy_ips = set(), set()
+    direct_entries, direct_ips = set(), set()
+    netflix_entries, netflix_ips = set(), set()
     snapshot = {"fetched": {}, "errors": []}
 
-    # fetch blacklist
     for url in blacklist:
         try:
             d, i = parse_source(url)
             snapshot["fetched"][url] = {"domains_count": len(d), "ips_count": len(i)}
-            if url in NETFLIX_GROUP:
+            # 单独处理 Netflix
+            if "netflix" in url:
                 netflix_entries |= d
                 netflix_ips |= i
             else:
@@ -227,7 +202,6 @@ def main():
             snapshot["errors"].append({"url": url, "error": str(e)})
             print(f"[error] parsing blacklist {url}: {e}")
 
-    # fetch whitelist
     for url in whitelist:
         try:
             d, i = parse_source(url)
@@ -241,21 +215,20 @@ def main():
     # flatten
     p_suf, p_dom, p_kw = flatten_domain_entries(proxy_entries)
     d_suf, d_dom, d_kw = flatten_domain_entries(direct_entries)
-    nf_suf, nf_dom, nf_kw = flatten_domain_entries(netflix_entries)
-    nf_ips = netflix_ips
+    n_suf, n_dom, n_kw = flatten_domain_entries(netflix_entries)
 
-    # 移除与 whitelist 重叠的 proxy
-    p_suf -= d_suf
-    p_dom -= d_dom
-    p_kw -= d_kw
+    # 移除白名单与Proxy冲突
+    p_suf -= d_suf; p_dom -= d_dom; p_kw -= d_kw
+    p_ips_before = len(proxy_ips)
     proxy_ips -= direct_ips
+    if len(proxy_ips) != p_ips_before:
+        print(f"[info] removed {p_ips_before - len(proxy_ips)} overlapping IPs")
 
-    # compose lines
+    # compose
     proxy_lines = compose_lines(p_suf, p_dom, p_kw, proxy_ips, "proxy")
     direct_lines = compose_lines(d_suf, d_dom, d_kw, direct_ips, "direct")
-    netflix_lines = compose_lines(nf_suf, nf_dom, nf_kw, nf_ips, "proxy")
+    netflix_lines = compose_lines(n_suf, n_dom, n_kw, netflix_ips, "proxy")  # Netflix 仍然 proxy
 
-    # build final file content
     ts = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     header = [
         "# ========================================",
@@ -263,33 +236,30 @@ def main():
         f"# Generated: {ts} (UTC)",
         "# Sources:",
     ]
-    for u in blacklist:
-        header.append(f"#  - proxy source: {u}")
-    for u in whitelist:
-        header.append(f"#  - direct source: {u}")
-    header.append("# Default policy: direct")
+    for u in blacklist: header.append(f"#  - proxy source: {u}")
+    for u in whitelist: header.append(f"#  - direct source: {u}")
+    header.append("# Default policy: direct (only whitelist entries are forced direct; blacklist entries are proxy)")
     header.append("# ========================================\n")
 
     sections = []
-    sections.append("# ===== Proxy (blacklist) =====")
-    sections.extend(proxy_lines if proxy_lines else ["# (none)"])
-    sections.append("\n# ===== Netflix (grouped) =====")
+    sections.append("# ===== Netflix =====")
     sections.extend(netflix_lines if netflix_lines else ["# (none)"])
+    sections.append("\n# ===== Proxy (blacklist) =====")
+    sections.extend(proxy_lines if proxy_lines else ["# (none)"])
     sections.append("\n# ===== Direct (whitelist) =====")
     sections.extend(direct_lines if direct_lines else ["# (none)"])
     content = "\n".join(header + sections) + "\n"
 
-    # 写文件
     OUT_FILE.write_text(content, encoding="utf-8")
     SNAPSHOT_FILE.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    print(f"[done] wrote {OUT_FILE} ({len(proxy_lines)} proxy, {len(netflix_lines)} netflix, {len(direct_lines)} direct)")
+    print(f"[done] wrote {OUT_FILE} ({len(netflix_lines)} Netflix, {len(proxy_lines)} proxy, {len(direct_lines)} direct)")
     print(f"[info] snapshot -> {SNAPSHOT_FILE}")
 
 if __name__ == "__main__":
     main()
 
-# 插入固定头部配置
+# 插入固定配置
 header_config = """\
 ipv6 = true
 bypass-system = true
@@ -301,6 +271,5 @@ dns-server = https://dns.alidns.com/dns-query, https://doh.pub/dns-query
 
 with open(OUT_FILE, "r", encoding="utf-8") as f:
     rules_content = f.read()
-
 with open(OUT_FILE, "w", encoding="utf-8") as f:
     f.write(header_config + "\n" + rules_content)
