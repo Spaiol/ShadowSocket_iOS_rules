@@ -308,10 +308,9 @@ dns-server = https://dns.alidns.com/dns-query, https://doh.pub/dns-query
 [Rule]
 """
 
-# 读取之前生成的规则
-with open(output_file, "r", encoding="utf-8") as f:
+with open(OUT_FILE, "r", encoding="utf-8") as f:
     rules_content = f.read()
 
-# 将 header 插入文件开头
-with open(output_file, "w", encoding="utf-8") as f:
+with open(OUT_FILE, "w", encoding="utf-8") as f:
     f.write(header_config + "\n" + rules_content)
+
