@@ -2,7 +2,7 @@ name: Update Rules
 
 on:
   schedule:
-    - cron: "0 3 * * *"  # 每天凌晨 3 点更新
+    - cron: "0 3 * * *"
   workflow_dispatch:
 
 jobs:
@@ -10,9 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Fix Git safe directory
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -24,7 +21,6 @@ jobs:
 
       - name: Generate rules
         run: python generate_rules.py
-        continue-on-error: true
 
       - name: Commit & Push
         run: |
