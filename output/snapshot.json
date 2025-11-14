@@ -1,5 +1,9 @@
 {
   "fetched": {
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/gfw.json": {
+      "domains_count": 5856,
+      "ips_count": 0
+    },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/apple.json": {
       "domains_count": 1566,
       "ips_count": 0
@@ -7,6 +11,10 @@
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/apple.json": {
       "domains_count": 0,
       "ips_count": 10
+    },
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/apple-intelligence.json": {
+      "domains_count": 5,
+      "ips_count": 0
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/google.json": {
       "domains_count": 696,
@@ -28,9 +36,21 @@
       "domains_count": 0,
       "ips_count": 19
     },
-    "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/gfw.json": {
-      "domains_count": 5856,
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/telegram.json": {
+      "domains_count": 25,
       "ips_count": 0
+    },
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/telegram.json": {
+      "domains_count": 0,
+      "ips_count": 12
+    },
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/twitter.json": {
+      "domains_count": 27,
+      "ips_count": 0
+    },
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/twitter.json": {
+      "domains_count": 0,
+      "ips_count": 21
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/github.json": {
       "domains_count": 31,
@@ -40,9 +60,13 @@
       "domains_count": 33,
       "ips_count": 0
     },
-    "https://github.com/Accademia/Additional_Rule_For_Clash/raw/refs/heads/main/AppleAI/AppleAI.yaml": {
-      "domains_count": 13,
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/cn.json": {
+      "domains_count": 3697,
       "ips_count": 0
+    },
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/cn.json": {
+      "domains_count": 0,
+      "ips_count": 7487
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/synology.json": {
       "domains_count": 20,
