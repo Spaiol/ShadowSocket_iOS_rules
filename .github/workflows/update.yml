@@ -14,6 +14,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -26,14 +28,21 @@ jobs:
       - name: Generate rules
         run: python generate_rules.py
 
-      - name: Commit & Push
+      - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit changes
+        run: |
           git add output/rules.conf output/snapshot.json || true
           git commit -m "Auto update rules $(date -u '+%Y-%m-%d %H:%M:%S')" || echo "No changes"
-          git pull --rebase origin main || true
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/<user>/<repo>.git main
+
+      - name: Pull remote changes
+        run: git pull --rebase origin main || true
+
+      - name: Push changes
+        run: git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Spaiol/ShadowSocket_iOS_rules.git main
 
       - name: Upload rules.conf to Release
         uses: softprops/action-gh-release@v1
