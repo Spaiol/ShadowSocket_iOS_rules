@@ -11,16 +11,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Fix Git safe directory
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install requests pyyaml
 
       - name: Generate rules
         run: python generate_rules.py
+        continue-on-error: true
 
       - name: Commit & Push
         run: |
