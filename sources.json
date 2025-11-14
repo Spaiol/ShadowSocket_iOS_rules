@@ -10,7 +10,9 @@
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/netflix.json",
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/gfw.json",
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/github.json",
-    "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/openai.json"
+    "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/openai.json",
+
+    "https://github.com/Accademia/Additional_Rule_For_Clash/raw/refs/heads/main/AppleAI/AppleAI.yaml"
   ],
   "whitelist": [
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/synology.json"
