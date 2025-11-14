@@ -3,10 +3,9 @@
 generate_rules.py
 
 合并多个 JSON / YAML 源（MetaCubeX geosite/geoip + Clash YAML）
-输出单一文件 output/rules.conf，格式带注释分区：
-- Proxy / Direct
-- Netflix 单独分组
+输出单一文件 output/rules.conf，格式带注释分区（Proxy / Direct）。
 默认策略：direct；黑名单来源规则设为 proxy，白名单来源设为 direct。
+相同服务的 SITE 和 IP URL 合并为一个分组。
 """
 
 import requests
@@ -92,8 +91,7 @@ def parse_clash_yaml_text(text):
     ips = set()
     try:
         obj = yaml.safe_load(text)
-    except Exception as e:
-        print(f"[error] yaml parse failed: {e}")
+    except:
         return domains, ips
     if not isinstance(obj, dict):
         return domains, ips
@@ -104,16 +102,17 @@ def parse_clash_yaml_text(text):
         parts = [p.strip() for p in item.split(",", 1)]
         if len(parts) < 2:
             continue
-        typ, val = parts[0].upper(), parts[1]
-        if typ == "DOMAIN-SUFFIX":
+        typ = parts[0].upper()
+        val = parts[1]
+        if typ in ("DOMAIN-SUFFIX",):
             nd = normalize_domain(val)
             if nd:
                 domains.add(("SUFFIX", nd))
-        elif typ == "DOMAIN":
+        elif typ in ("DOMAIN",):
             nd = normalize_domain(val)
             if nd:
                 domains.add(("DOMAIN", nd))
-        elif typ == "DOMAIN-KEYWORD":
+        elif typ in ("DOMAIN-KEYWORD",):
             kw = val.strip().lower()
             if kw:
                 domains.add(("KEYWORD", kw))
@@ -148,29 +147,35 @@ def parse_source(url):
         line = line.strip()
         if not line or line.startswith("#"):
             continue
-        token = line.split()[-1]
-        nd = normalize_domain(token)
+        nd = normalize_domain(line.split()[-1])
         if nd:
             domains.add(("SUFFIX", nd))
     return domains, ips
 
-def flatten_domain_entries(domain_entries):
+def flatten_domain_entries(entries):
     suffixes, exact, keywords = set(), set(), set()
-    for e in domain_entries:
+    for e in entries:
         if not isinstance(e, tuple):
             continue
         t, val = e
-        if t == "SUFFIX": suffixes.add(val)
-        elif t == "DOMAIN": exact.add(val)
-        elif t == "KEYWORD": keywords.add(val)
+        if t == "SUFFIX":
+            suffixes.add(val)
+        elif t == "DOMAIN":
+            exact.add(val)
+        elif t == "KEYWORD":
+            keywords.add(val)
     return suffixes, exact, keywords
 
 def compose_lines(suffixes, exacts, keywords, ips, policy):
     lines = []
-    for d in sorted(suffixes): lines.append(f"DOMAIN-SUFFIX,{d},{policy}")
-    for d in sorted(exacts): lines.append(f"DOMAIN,{d},{policy}")
-    for k in sorted(keywords): lines.append(f"DOMAIN-KEYWORD,{k},{policy}")
-    for ip in sorted(ips): lines.append(f"IP-CIDR,{ip},{policy},no-resolve")
+    for d in sorted(suffixes):
+        lines.append(f"DOMAIN-SUFFIX,{d},{policy}")
+    for d in sorted(exacts):
+        lines.append(f"DOMAIN,{d},{policy}")
+    for k in sorted(keywords):
+        lines.append(f"DOMAIN-KEYWORD,{k},{policy}")
+    for ip in sorted(ips):
+        lines.append(f"IP-CIDR,{ip},{policy},no-resolve")
     return lines
 
 def main():
@@ -182,85 +187,83 @@ def main():
     blacklist = sources.get("blacklist", [])
     whitelist = sources.get("whitelist", [])
 
-    proxy_entries, proxy_ips = set(), set()
-    direct_entries, direct_ips = set(), set()
-    netflix_entries, netflix_ips = set(), set()
     snapshot = {"fetched": {}, "errors": []}
 
+    # 分组存储 proxy/direct 规则
+    proxy_groups = {}
+    direct_groups = {}
+
+    def group_name_from_url(url):
+        """从 URL 中提取服务名作为 group label"""
+        name_map = ["netflix", "google", "apple", "youtube", "github", "onedrive", "openai", "microsoft", "telegram", "twitter", "cloudflare", "cloudfront"]
+        for n in name_map:
+            if n in url.lower():
+                return n.capitalize()
+        return "Other"
+
+    # 处理 blacklist
     for url in blacklist:
         try:
             d, i = parse_source(url)
             snapshot["fetched"][url] = {"domains_count": len(d), "ips_count": len(i)}
-            # 单独处理 Netflix
-            if "netflix" in url:
-                netflix_entries |= d
-                netflix_ips |= i
-            else:
-                proxy_entries |= d
-                proxy_ips |= i
+            grp = group_name_from_url(url)
+            if grp not in proxy_groups:
+                proxy_groups[grp] = {"domains": set(), "ips": set()}
+            proxy_groups[grp]["domains"] |= d
+            proxy_groups[grp]["ips"] |= i
         except Exception as e:
             snapshot["errors"].append({"url": url, "error": str(e)})
-            print(f"[error] parsing blacklist {url}: {e}")
 
+    # 处理 whitelist
     for url in whitelist:
         try:
             d, i = parse_source(url)
             snapshot["fetched"][url] = {"domains_count": len(d), "ips_count": len(i)}
-            direct_entries |= d
-            direct_ips |= i
+            grp = group_name_from_url(url)
+            if grp not in direct_groups:
+                direct_groups[grp] = {"domains": set(), "ips": set()}
+            direct_groups[grp]["domains"] |= d
+            direct_groups[grp]["ips"] |= i
         except Exception as e:
             snapshot["errors"].append({"url": url, "error": str(e)})
-            print(f"[error] parsing whitelist {url}: {e}")
 
-    # flatten
-    p_suf, p_dom, p_kw = flatten_domain_entries(proxy_entries)
-    d_suf, d_dom, d_kw = flatten_domain_entries(direct_entries)
-    n_suf, n_dom, n_kw = flatten_domain_entries(netflix_entries)
+    # whitelist override proxy
+    for grp in direct_groups:
+        if grp in proxy_groups:
+            proxy_groups[grp]["domains"] -= direct_groups[grp]["domains"]
+            proxy_groups[grp]["ips"] -= direct_groups[grp]["ips"]
 
-    # 移除白名单与Proxy冲突
-    p_suf -= d_suf; p_dom -= d_dom; p_kw -= d_kw
-    p_ips_before = len(proxy_ips)
-    proxy_ips -= direct_ips
-    if len(proxy_ips) != p_ips_before:
-        print(f"[info] removed {p_ips_before - len(proxy_ips)} overlapping IPs")
-
-    # compose
-    proxy_lines = compose_lines(p_suf, p_dom, p_kw, proxy_ips, "proxy")
-    direct_lines = compose_lines(d_suf, d_dom, d_kw, direct_ips, "direct")
-    netflix_lines = compose_lines(n_suf, n_dom, n_kw, netflix_ips, "proxy")  # Netflix 仍然 proxy
-
+    # 生成文件内容
     ts = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     header = [
         "# ========================================",
         "# Auto-generated rules.conf",
         f"# Generated: {ts} (UTC)",
-        "# Sources:",
+        "# Default policy: direct (whitelist) / proxy (blacklist)",
+        "# ========================================\n"
     ]
-    for u in blacklist: header.append(f"#  - proxy source: {u}")
-    for u in whitelist: header.append(f"#  - direct source: {u}")
-    header.append("# Default policy: direct (only whitelist entries are forced direct; blacklist entries are proxy)")
-    header.append("# ========================================\n")
 
     sections = []
-    sections.append("# ===== Netflix =====")
-    sections.extend(netflix_lines if netflix_lines else ["# (none)"])
-    sections.append("\n# ===== Proxy (blacklist) =====")
-    sections.extend(proxy_lines if proxy_lines else ["# (none)"])
+
+    # Proxy
+    sections.append("# ===== Proxy (blacklist) =====")
+    for grp, data in proxy_groups.items():
+        sections.append(f"\n# ----- {grp} -----")
+        suf, dom, kw = flatten_domain_entries(data["domains"])
+        lines = compose_lines(suf, dom, kw, data["ips"], "proxy")
+        sections.extend(lines if lines else ["# (none)"])
+
+    # Direct
     sections.append("\n# ===== Direct (whitelist) =====")
-    sections.extend(direct_lines if direct_lines else ["# (none)"])
+    for grp, data in direct_groups.items():
+        sections.append(f"\n# ----- {grp} -----")
+        suf, dom, kw = flatten_domain_entries(data["domains"])
+        lines = compose_lines(suf, dom, kw, data["ips"], "direct")
+        sections.extend(lines if lines else ["# (none)"])
+
+    # 写入文件
     content = "\n".join(header + sections) + "\n"
-
-    OUT_FILE.write_text(content, encoding="utf-8")
-    SNAPSHOT_FILE.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
-
-    print(f"[done] wrote {OUT_FILE} ({len(netflix_lines)} Netflix, {len(proxy_lines)} proxy, {len(direct_lines)} direct)")
-    print(f"[info] snapshot -> {SNAPSHOT_FILE}")
-
-if __name__ == "__main__":
-    main()
-
-# 插入固定配置
-header_config = """\
+    header_config = """\
 ipv6 = true
 bypass-system = true
 skip-proxy = 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, fe80::/10, fc00::/7, localhost, *.local, *.lan, *.internal, e.crashlytics.com, captive.apple.com, sequoia.apple.com, seed-sequoia.siri.apple.com, *.ls.apple.com
@@ -268,8 +271,11 @@ bypass-tun = 10.0.0.0/8,100.64.0.0/10,127.0.0.0/8,169.254.0.0/16,172.16.0.0/12,1
 dns-server = https://dns.alidns.com/dns-query, https://doh.pub/dns-query
 [Rule]
 """
+    OUT_FILE.write_text(header_config + "\n" + content, encoding="utf-8")
+    SNAPSHOT_FILE.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
 
-with open(OUT_FILE, "r", encoding="utf-8") as f:
-    rules_content = f.read()
-with open(OUT_FILE, "w", encoding="utf-8") as f:
-    f.write(header_config + "\n" + rules_content)
+    print(f"[done] wrote {OUT_FILE}")
+    print(f"[info] snapshot -> {SNAPSHOT_FILE}")
+
+if __name__ == "__main__":
+    main()
