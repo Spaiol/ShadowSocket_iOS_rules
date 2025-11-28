@@ -22,7 +22,7 @@
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/google.json": {
       "domains_count": 0,
-      "ips_count": 747
+      "ips_count": 748
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/youtube.json": {
       "domains_count": 180,
@@ -34,7 +34,7 @@
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/netflix.json": {
       "domains_count": 0,
-      "ips_count": 19
+      "ips_count": 22
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/telegram.json": {
       "domains_count": 25,
@@ -66,7 +66,7 @@
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/cn.json": {
       "domains_count": 0,
-      "ips_count": 7486
+      "ips_count": 7487
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/synology.json": {
       "domains_count": 20,
