@@ -17,7 +17,7 @@
       "ips_count": 0
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/google.json": {
-      "domains_count": 696,
+      "domains_count": 697,
       "ips_count": 0
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/google.json": {
@@ -61,7 +61,7 @@
       "ips_count": 0
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/cn.json": {
-      "domains_count": 3697,
+      "domains_count": 3698,
       "ips_count": 0
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/cn.json": {
