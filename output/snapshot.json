@@ -66,7 +66,7 @@
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/cn.json": {
       "domains_count": 0,
-      "ips_count": 7495
+      "ips_count": 7494
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/synology.json": {
       "domains_count": 20,
