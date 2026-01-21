@@ -1,7 +1,7 @@
 {
   "fetched": {
     "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/gfw.json": {
-      "domains_count": 5929,
+      "domains_count": 5931,
       "ips_count": 0
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/apple.json": {
@@ -57,7 +57,7 @@
       "ips_count": 0
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/openai.json": {
-      "domains_count": 33,
+      "domains_count": 32,
       "ips_count": 0
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/cn.json": {
