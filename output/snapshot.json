@@ -1,11 +1,11 @@
 {
   "fetched": {
     "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/gfw.json": {
-      "domains_count": 4173,
+      "domains_count": 4174,
       "ips_count": 0
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/apple.json": {
-      "domains_count": 1566,
+      "domains_count": 1567,
       "ips_count": 0
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/apple.json": {
@@ -22,7 +22,7 @@
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/google.json": {
       "domains_count": 0,
-      "ips_count": 745
+      "ips_count": 742
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/youtube.json": {
       "domains_count": 180,
