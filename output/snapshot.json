@@ -1,7 +1,7 @@
 {
   "fetched": {
     "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/gfw.json": {
-      "domains_count": 4190,
+      "domains_count": 4186,
       "ips_count": 0
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/apple.json": {
@@ -22,7 +22,7 @@
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/google.json": {
       "domains_count": 0,
-      "ips_count": 782
+      "ips_count": 784
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/youtube.json": {
       "domains_count": 180,
@@ -61,12 +61,12 @@
       "ips_count": 0
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/cn.json": {
-      "domains_count": 3698,
+      "domains_count": 3697,
       "ips_count": 0
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/cn.json": {
       "domains_count": 0,
-      "ips_count": 7502
+      "ips_count": 7503
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/synology.json": {
       "domains_count": 20,
