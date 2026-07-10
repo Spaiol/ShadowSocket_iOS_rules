@@ -22,7 +22,7 @@
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/google.json": {
       "domains_count": 0,
-      "ips_count": 787
+      "ips_count": 795
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/youtube.json": {
       "domains_count": 180,
@@ -50,7 +50,7 @@
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/twitter.json": {
       "domains_count": 0,
-      "ips_count": 21
+      "ips_count": 20
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/github.json": {
       "domains_count": 31,
