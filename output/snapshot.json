@@ -1,7 +1,7 @@
 {
   "fetched": {
     "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/gfw.json": {
-      "domains_count": 0,
+      "domains_count": 4433,
       "ips_count": 0
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/apple.json": {
@@ -10,22 +10,22 @@
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/apple.json": {
       "domains_count": 0,
-      "ips_count": 0
+      "ips_count": 10
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/apple-intelligence.json": {
-      "domains_count": 0,
+      "domains_count": 5,
       "ips_count": 0
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/google.json": {
-      "domains_count": 0,
+      "domains_count": 690,
       "ips_count": 0
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/google.json": {
       "domains_count": 0,
-      "ips_count": 0
+      "ips_count": 910
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/youtube.json": {
-      "domains_count": 0,
+      "domains_count": 180,
       "ips_count": 0
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/netflix.json": {
@@ -34,18 +34,18 @@
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/netflix.json": {
       "domains_count": 0,
-      "ips_count": 0
+      "ips_count": 24
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/telegram.json": {
-      "domains_count": 0,
+      "domains_count": 25,
       "ips_count": 0
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/telegram.json": {
       "domains_count": 0,
-      "ips_count": 0
+      "ips_count": 12
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geosite/twitter.json": {
-      "domains_count": 0,
+      "domains_count": 27,
       "ips_count": 0
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/twitter.json": {
@@ -66,10 +66,10 @@
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo-lite/geoip/cn.json": {
       "domains_count": 0,
-      "ips_count": 0
+      "ips_count": 7516
     },
     "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/synology.json": {
-      "domains_count": 0,
+      "domains_count": 20,
       "ips_count": 0
     }
   },
